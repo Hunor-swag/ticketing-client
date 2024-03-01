@@ -41,14 +41,31 @@
 import { ref } from "vue";
 import TextInput from "./ui/TextInput.vue";
 import { RouterLink } from "vue-router";
+import Toast from "vue-toastification";
 
 const formData = ref({
 	email: "",
 	password: "",
 });
 
-const signIn = () => {
+const signIn = async () => {
 	console.log("Signing in...");
 	console.log(formData.value.email, formData.value.password);
+	const res = await fetch(`http://localhost:3001/auth/customer/signin`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			email: formData.value.email,
+			password: formData.value.password,
+		}),
+	});
+	console.log(res.status, res.statusText);
+	if (res.ok) {
+		const data = await res.json();
+		localStorage.setItem("authToken", data.token);
+	} else {
+	}
 };
 </script>
